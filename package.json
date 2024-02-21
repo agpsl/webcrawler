@@ -1,0 +1,23 @@
+{
+  "name": "webcrowler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agpsl/webcrowler.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agpsl/webcrowler/issues"
+  },
+  "homepage": "https://github.com/agpsl/webcrowler#readme",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
