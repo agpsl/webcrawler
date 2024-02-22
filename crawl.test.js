@@ -1,5 +1,5 @@
 const { test, expect } = require('@jest/globals')
-const { normalizeURL } = require('./crawl.js')
+const { normalizeURL, getURLsFromHTML } = require('./crawl.js')
 
 test('normalizeURL urls', () => {
 	const urls = [
@@ -12,5 +12,18 @@ test('normalizeURL urls', () => {
 	]
 	for (const url of urls) {
 		expect(normalizeURL(url)).toBe('blog.boot.dev/path')
+	}
+})
+
+test('getURLsFromHTML', () => {
+	const baseURL = 'https://blog.boot.dev/'
+	const htmls = [
+		[`<html><body><a href="https://blog.boot.dev"><span>Go to Boot.dev</span></a></body></html>`, ["https://blog.boot.dev/"]],
+		[`<html><body><a href="https://blog.boot.dev"><a href="https://blog.boot.dev"><span>Go to Boot.dev</span></a></body></html>`, ["https://blog.boot.dev/", "https://blog.boot.dev/"]],
+		[`<html><body><a href="https://blog.boot.dev"><a href="/test.php?a=b"><span>Go to Boot.dev</span></a></body></html>`, ["https://blog.boot.dev/", "https://blog.boot.dev/test.php?a=b"]],
+	]
+
+	for (let i = 0; i < htmls.length; i++) {
+		expect(getURLsFromHTML(htmls[i][0], baseURL)).toEqual(htmls[i][1])
 	}
 })
