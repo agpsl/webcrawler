@@ -17,10 +17,10 @@ function getURLsFromHTML(htmlBody, baseURL) {
 	const urls = []
 
 	for (const link of links) {
-		href = link.href
+		const href = link.href
 		if (href.startsWith(baseURL)){
 			try {
-				urls.push(new URL(href).href);
+				urls.push(new URL(href, baseURL).href);
 			} catch (err) {
 				console.log(err.message, href);
 			}
@@ -35,23 +35,54 @@ function getURLsFromHTML(htmlBody, baseURL) {
 	return urls
 }
 
-async function crawlPage(baseURL) {
+async function crawlPage(baseURL, currentURL, pages) {
+	const baseURLObj = new URL(baseURL);
+	const currentURLObj = new URL(currentURL);
+	if (currentURLObj.host !== baseURLObj.host) {
+		return pages
+	}
+
+	const normURL = normalizeURL(currentURL)
+
+	if (pages[normURL] > 0) {
+		pages[normURL]++;
+		return pages
+	}
+
+	if (currentURL === baseURL) {
+		pages[normURL] = 0;
+	} else {
+		pages[normURL] = 1;
+	}
+
+	console.log(currentURL);
+
+	let htmlContent = '';
 	try {
-		const response = await fetch(baseURL)
-		const contentType = response.headers.get('Content-Type');
-		if (response.status >= 400) {
-			console.log('HTTP error: ' + response.statusText);
-			return
+        const response = await fetch(baseURL)
+        const contentType = response.headers.get('Content-Type');
+
+        if (response.status >= 400) {
+	        console.log('HTTP error: ' + response.statusText);
+			return pages
 		}
+
 		if (!contentType.includes('text/html')) {
 			console.log('Content is not HTML: ' + contentType);
-			return
+			return pages
 		}
-		const html = await response.text();
-		console.log(html);
+
+		htmlContent = await response.text()
 	} catch (err) {
-		console.log('Erro ao pegar HTML: ' + err);
+		console.log(err.message);
 	}
+
+	const urls = getURLsFromHTML(htmlContent, baseURL);
+	for (const url of urls) {
+		pages = await crawlPage(baseURL, url, pages);
+	}
+
+	return pages
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-const { crawlPage } = require("./crawl.js");
+const { crawlPage, normalizeURL } = require("./crawl.js");
 
 function main() {
 	if (process.argv.length != 3) {
@@ -10,7 +10,8 @@ function main() {
 
 	console.log(`Starting to crawl ${baseURL}`);
 
-	crawlPage(baseURL);
+	const normBaseURL = normalizeURL(baseURL);
+	crawlPage(baseURL, baseURL, { [normBaseURL]: 0 });
 }
 
 main()
