@@ -1,6 +1,7 @@
 const { crawlPage, normalizeURL } = require("./crawl.js");
+const { printReport } = require("./report.js");
 
-function main() {
+async function main() {
 	if (process.argv.length != 3) {
 		console.log('Usage: npm run start BASEURL');
 		process.exit(1)
@@ -11,7 +12,8 @@ function main() {
 	console.log(`Starting to crawl ${baseURL}`);
 
 	const normBaseURL = normalizeURL(baseURL);
-	crawlPage(baseURL, baseURL, { [normBaseURL]: 0 });
+	const pages = await crawlPage(baseURL, baseURL, { [normBaseURL]: 0 });
+	printReport(pages);
 }
 
 main()

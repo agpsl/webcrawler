@@ -55,7 +55,7 @@ async function crawlPage(baseURL, currentURL, pages) {
 		pages[normURL] = 1;
 	}
 
-	console.log(currentURL);
+	// console.log(currentURL);
 
 	let htmlContent = '';
 	try {
